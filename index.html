@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <title>Accent Guesser</title>
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="favicon/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="favicon/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="favicon/favicon-16x16.png"
+    />
+    <link rel="manifest" href="favicon/site.webmanifest" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="stylesheet.css" />
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+      crossorigin=""
+    />
+    <!-- Material Icons CSS -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+      integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+      crossorigin=""
+    ></script>
+    <script src="main.js"></script>
+  </head>
+
+  <body>
+    <h1>ACCENT GUESSER</h1>
+    <!-- TODO flags? -->
+    <div id="header-line"></div>
+
+    <div
+      id="play-game-button-container"
+      style="text-align: center; margin-top: 20px"
+    >
+      <button id="play-game-button">Play Game</button>
+    </div>
+
+    <div id="game-bar" style="display: none">
+      <div id="audio-player-container">
+        <audio id="audio-player" controls></audio>
+      </div>
+    </div>
+
+    <button
+      id="confirm-answer-button"
+      class="bottom-button"
+      style="display: none"
+    >
+      Confirm
+    </button>
+
+    <button id="next-round-button" class="bottom-button" style="display: none">
+      Next Round
+    </button>
+
+    <div id="round-label" style="display: none">Round: 1/10</div>
+    <div id="point-label" style="display: none">Points: 0</div>
+
+    <div id="scoreboard"></div>
+
+    <div id="map"></div>
+
+    <script>
+      window.onload = () => startup();
+    </script>
+  </body>
+</html>
