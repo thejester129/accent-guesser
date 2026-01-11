@@ -237,9 +237,9 @@ function showScoreboard() {
   let html = `<div>`;
   html += `<div><b>Total:</b> ${points} points</div>`;
   const average =
-    mockData.map((i) => i.userAnswer.points).reduce((a, b) => a + b, 0) /
+    mockData.map((i) => i.userAnswer.distance).reduce((a, b) => a + b, 0) /
     mockData.length;
-  html += `<div><b>Average:</b> ${average} points</div>`;
+  html += `<div><b>Average Distance:</b> ${average} points</div>`;
   const bestGuessPoints = mockData
     .map((i) => i.userAnswer.points)
     .sort((a, b) => b - a)[0];
