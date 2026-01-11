@@ -17,6 +17,10 @@ let currentMarker, answerMarker;
 let answerLine;
 let answerTooltip;
 
+const BULLSEYE_LIMIT = 200;
+const RANGE_LIMIT = 3000;
+const POINT_TOTAL = 1000;
+
 const greenIcon = new L.Icon({
   iconUrl:
     "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
@@ -239,7 +243,7 @@ function showScoreboard() {
   const average =
     mockData.map((i) => i.userAnswer.distance).reduce((a, b) => a + b, 0) /
     mockData.length;
-  html += `<div><b>Average Distance:</b> ${average} points</div>`;
+  html += `<div><b>Average Distance:</b> ${average.toFixed(0)} km</div>`;
   const bestGuessPoints = mockData
     .map((i) => i.userAnswer.points)
     .sort((a, b) => b - a)[0];
@@ -265,13 +269,15 @@ function hideAnswerLine() {
 
 function showAnswerTooltip(distance, points) {
   const correctAnswer = mockData.find((item) => item.round === round);
+  let content = `${correctAnswer.textLocation}<br />`;
+  content += `${distance.toFixed(0)}km<br /> `;
+  content += `${points} points`;
+  if (distance < BULLSEYE_LIMIT) {
+    content += `<br /> 🎯 Bullseye!`;
+  }
   answerTooltip = L.tooltip({ direction: "top", offset: [0, -30] })
     .setLatLng(correctAnswer.latlng)
-    .setContent(
-      `${correctAnswer.textLocation}<br /> ${distance.toFixed(
-        0
-      )}km<br /> ${points} points`
-    );
+    .setContent(content);
   answerTooltip.addTo(map);
 }
 
@@ -286,19 +292,17 @@ function resetMapView() {
 }
 
 function calculatePoints(answer, correct) {
-  const rangeLimit = 3000;
-  const pointTotal = 1000;
   const distanceKm = map.distance(answer, correct) / 1000;
   // bullseye
-  if (distanceKm < 200) {
-    return pointTotal;
+  if (distanceKm < BULLSEYE_LIMIT) {
+    return POINT_TOTAL;
   }
   // out of range
-  if (distanceKm > rangeLimit) {
+  if (distanceKm > RANGE_LIMIT) {
     return 0;
   }
   // middle
-  return Math.round(pointTotal - (distanceKm / rangeLimit) * pointTotal);
+  return Math.round(POINT_TOTAL - (distanceKm / RANGE_LIMIT) * POINT_TOTAL);
 }
 
 function createMap() {
