@@ -56,6 +56,18 @@
       <button id="play-game-button">Play Game</button>
     </div>
 
+    <div
+      style="
+        display: flex;
+        justify-content: space-between;
+        margin-left: 20px;
+        margin-right: 20px;
+      "
+    >
+      <div id="round-label" style="display: none">Round: 1/10</div>
+      <div id="point-label" style="display: none">Points: 0</div>
+    </div>
+
     <div id="game-bar" style="display: none">
       <div id="audio-player-container">
         <audio id="audio-player" controls></audio>
@@ -73,9 +85,6 @@
     <button id="next-round-button" class="bottom-button" style="display: none">
       Next Round
     </button>
-
-    <div id="round-label" style="display: none">Round: 1/10</div>
-    <div id="point-label" style="display: none">Points: 0</div>
 
     <div id="scoreboard"></div>
 

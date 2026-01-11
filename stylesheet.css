@@ -53,17 +53,17 @@ button{
 }
 
 #point-label{
-    position: absolute;
-    bottom:100px;
-    right:30px;
+    /* position: absolute; */
+    /* bottom:100px; */
+    /* right:30px; */
     font-size: 22px;
     z-index: 2000;
 }
 
 #round-label{
-    position: absolute;
-    bottom:100px;
-    left:30px;
+    /* position: absolute; */
+    /* bottom:100px; */
+    /* left:30px; */
     font-size: 22px;
     z-index: 2000;
 }
