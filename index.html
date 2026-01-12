@@ -41,19 +41,35 @@
       integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
       crossorigin=""
     ></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" src="models.js"></script>
+    <script type="text/javascript" src="user.js"></script>
+    <script type="text/javascript" src="data.js"></script>
+    <script type="text/javascript" src="utils.js"></script>
+    <script type="text/javascript" src="map.js"></script>
     <script src="main.js"></script>
   </head>
 
   <body>
-    <h1>ACCENT GUESSER</h1>
+    <h1 id="title" style="cursor: pointer">ACCENT GUESSER</h1>
     <!-- TODO flags? -->
     <div id="header-line"></div>
 
     <div
       id="play-game-button-container"
-      style="text-align: center; margin-top: 20px"
+      style="
+        margin-top: 20px;
+        margin-left: 20px;
+        margin-right: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-direction: column;
+      "
     >
-      <button id="play-game-button">Play Game</button>
+      <button id="daily-game-button">Daily Game</button>
+      <button id="quick-game-button">Quick Game</button>
+      <button id="stats-button">User Stats</button>
     </div>
 
     <div
@@ -86,9 +102,22 @@
       Next Round
     </button>
 
-    <div id="scoreboard"></div>
+    <button id="play-again-button" class="bottom-button" style="display: none">
+      Play Again
+    </button>
+
+    <button id="home-button" class="bottom-button" style="display: none">
+      Home
+    </button>
+
+    <div id="scoreboard" class="stats"></div>
 
     <div id="map"></div>
+
+    <canvas
+      id="daily-game-stats-chart"
+      style="height: 500px; margin-top: 20px; display: none"
+    ></canvas>
 
     <script>
       window.onload = () => startup();
