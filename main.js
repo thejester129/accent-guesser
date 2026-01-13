@@ -147,6 +147,8 @@ function nextRound() {
   currentMarker.removeFrom(map);
   answerMarker.removeFrom(map);
   resetMapView();
+  answerLine = null;
+  answerMarker = null;
 
   if (round === mockData.length) {
     finishGame();
