@@ -115,11 +115,12 @@ button{
 
 #answer-info{
   position: fixed;
-  bottom: 40px;
+  /* annoying phone bars */
+  bottom: 0px; 
   left: 0px;
   right: 0px;
   top: 60vh;
-  z-index: 3000;
+  z-index: 1500;
   text-align: center;
   font-size: 15px;
   color: gray;
