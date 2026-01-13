@@ -111,7 +111,7 @@ function assignEventListeners() {
     navigate("index.html");
   });
   map.on("click", function (ev) {
-    if (selectedLatlng) {
+    if (answerMarker) {
       return;
     }
     selectedLatlng = [ev.latlng.lat, ev.latlng.lng];
