@@ -1,5 +1,3 @@
-const API_ROOT = "https://6d4gv33s1k.execute-api.eu-west-1.amazonaws.com";
-
 async function getUserState() {
   const res = await fetch(`${API_ROOT}/daily-scoreboard/${getUserId()}`);
   let dailyGameState;

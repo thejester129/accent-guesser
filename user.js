@@ -8,15 +8,28 @@ function getUserId() {
   return userId;
 }
 
-function getUserStats() {
-  const userId = getUserId();
-  // TODO
+async function getUserStats() {
+  const res = await fetch(`${API_ROOT}/stats/${getUserId()}`);
+  if (res.ok) {
+    const stats = await res.json();
+    return stats;
+  }
   return {
-    dailyGamesPlayed: 5,
-    roundsPlayed: 10,
-    bestDailyGameScore: 8121,
-    totalPoints: 2500,
+    dailyGamesPlayed: 0,
+    roundsPlayed: 0,
+    bestDailyGameScore: 0,
+    totalPoints: 0,
   };
+}
+
+async function updateUserStats(stats) {
+  await fetch(`${API_ROOT}/stats/${getUserId()}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(stats),
+  });
 }
 
 function uuidv4() {

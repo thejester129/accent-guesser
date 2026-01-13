@@ -229,6 +229,13 @@ function finishGame() {
   if (gameType === GAME_TYPES.DAILY) {
     completeDailyGame(points);
   }
+
+  updateUserStats({
+    dailyGamesPlayed: gameType === GAME_TYPES.DAILY ? 1 : 0,
+    roundsPlayed: mockData.length, // TODO
+    dailyGameScore: gameType === GAME_TYPES.DAILY ? points : 0,
+    points: points,
+  });
 }
 
 function showScoreboard() {
