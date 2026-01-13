@@ -116,10 +116,10 @@ button{
 #answer-info{
   position: fixed;
   /* annoying phone bars */
-  bottom: 0px; 
+  bottom: 40px; 
   left: 0px;
   right: 0px;
-  top: 60vh;
+  top: 50vh;
   z-index: 1500;
   text-align: center;
   font-size: 15px;
