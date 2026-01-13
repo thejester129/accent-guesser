@@ -356,7 +356,7 @@ function showAnswerInfo(answer) {
   let content = "";
   content += `<h3 style="color: black;">${answer.textLocation}</h3>`;
   content += `<div onclick="hideAnswerInfo()" class="dialog-close-button">x</div>`;
-  content += `<div>${answer.description}</div>`;
+  content += `<div style="overflow: scroll; max-height: calc(40vh - 130px);">${answer.description}</div>`;
   answerInfo.innerHTML = content;
 }
 
