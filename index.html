@@ -52,7 +52,7 @@
 
   <body>
     <h1 id="title" style="cursor: pointer">ACCENT GUESSER</h1>
-    <div id="flag-carousel-1">
+    <div id="flag-carousel">
       <img src="assets/flag-british.png" class="flag" />
       <img src="assets/flag-china.png" class="flag" />
       <img src="assets/flag-argentina.png" class="flag" />
@@ -121,6 +121,7 @@
     >
       <button id="daily-game-button">Daily Game</button>
       <button id="quick-game-button">Quick Game</button>
+      <button id="regions-button">Regions</button>
       <button id="stats-button">User Stats</button>
     </div>
 
@@ -138,7 +139,11 @@
 
     <div id="game-bar" style="display: none">
       <div id="audio-player-container">
-        <audio id="audio-player" controls></audio>
+        <audio
+          id="audio-player"
+          controls
+          controlslist="nodownload noplaybackrate"
+        ></audio>
       </div>
     </div>
 
@@ -175,7 +180,11 @@
       the map.
       <br />
       <br />
+      <br />
+      <img src="assets/map.png" />
     </div>
+
+    <div id="answer-info"></div>
 
     <canvas
       id="daily-game-stats-chart"

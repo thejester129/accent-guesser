@@ -10,6 +10,7 @@ function load() {
 
   let innerHtml = "";
   innerHtml += `<div>Daily Games Played: ${userStats.dailyGamesPlayed}</div>`;
+  innerHtml += `<div>Best Daily Game Score: ${userStats.bestDailyGameScore}</div>`;
   innerHtml += `<div>Rounds Played: ${userStats.roundsPlayed}</div>`;
   innerHtml += `<div>Total Points: ${userStats.totalPoints}</div>`;
 

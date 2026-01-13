@@ -54,17 +54,11 @@ button{
 }
 
 #point-label{
-    /* position: absolute; */
-    /* bottom:100px; */
-    /* right:30px; */
     font-size: 22px;
     z-index: 2000;
 }
 
 #round-label{
-    /* position: absolute; */
-    /* bottom:100px; */
-    /* left:30px; */
     font-size: 22px;
     z-index: 2000;
 }
@@ -107,7 +101,7 @@ button{
   animation-timing-function: linear;
 }
 
-#flag-carousel-1 {
+#flag-carousel {
   margin-left: 20px;
   margin-right: 20px;
   overflow: hidden;
@@ -115,9 +109,43 @@ button{
   display: flex;
 }
 
-#flag-carousel-2 {
-  margin-left: 20px;
-  margin-right: 20px;
-  overflow: hidden;
-  max-height: 30px;
+#about{
+  padding-top: 20px;
 }
+
+#answer-info{
+  position: fixed;
+  bottom: 40px;
+  left: 0px;
+  right: 0px;
+  top: 60vh;
+  z-index: 3000;
+  text-align: center;
+  font-size: 15px;
+  color: gray;
+  display: none;
+  padding: 20px;
+  background-color: white;
+  animation-duration: 0.5s;
+  animation-name: slideUp;
+}
+
+.dialog-close-button{
+  position: absolute;
+  top: 27px;
+  right: 20px;
+  font-size: 30px;
+  color: black;
+  cursor: pointer;
+}
+
+@keyframes slideUp {
+    0% {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }

@@ -6,9 +6,12 @@ const DAILY_ROUND_TOTAL = 10;
 // html elements
 let title,
   about,
+  flagCarousel,
   mapElem,
+  playGameButtonContainer,
   dailyGameButton,
   quickGameButton,
+  regionsButton,
   statsButton,
   confirmAnswerButton,
   nextRoundButton,
@@ -21,7 +24,8 @@ let title,
   pointLabel,
   scoreboard,
   userStatsContainer,
-  dailyGameStatsChart;
+  dailyGameStatsChart,
+  answerInfo;
 
 // game state
 let round = 0;
@@ -39,8 +43,13 @@ function startup() {
 function assignElements() {
   title = document.getElementById("title");
   about = document.getElementById("about");
+  flagCarousel = document.getElementById("flag-carousel");
+  playGameButtonContainer = document.getElementById(
+    "play-game-button-container"
+  );
   dailyGameButton = document.getElementById("daily-game-button");
   quickGameButton = document.getElementById("quick-game-button");
+  regionsButton = document.getElementById("regions-button");
   statsButton = document.getElementById("stats-button");
   confirmAnswerButton = document.getElementById("confirm-answer-button");
   nextRoundButton = document.getElementById("next-round-button");
@@ -55,6 +64,7 @@ function assignElements() {
   scoreboard = document.getElementById("scoreboard");
   userStatsContainer = document.getElementById("user-stats");
   dailyGameStatsChart = document.getElementById("daily-game-stats-chart");
+  answerInfo = document.getElementById("answer-info");
 }
 
 function assignEventListeners() {
@@ -68,6 +78,9 @@ function assignEventListeners() {
   quickGameButton.addEventListener("click", () => {
     initGame();
     gameType = GAME_TYPES.QUICK;
+  });
+  regionsButton.addEventListener("click", () => {
+    window.alert("Coming soon!");
   });
   statsButton.addEventListener("click", () => {
     navigate("stats.html");
@@ -105,10 +118,9 @@ function initGame() {
 
   resetMapView();
 
-  hideDiv(dailyGameButton);
-  hideDiv(quickGameButton);
-  hideDiv(statsButton);
+  hideDiv(playGameButtonContainer);
   hideDiv(about);
+  hideDiv(flagCarousel);
   hideScoreboard();
   showDiv(pointLabel);
   showDiv(roundLabel);
@@ -170,14 +182,23 @@ function showAnswerTooltip(distance, points) {
   if (distance < BULLSEYE_LIMIT) {
     content += `<br /> 🎯 Bullseye!`;
   }
+  content += `<br /> <div style="text-align: center; color: gray; font-size: 20px; margin-top: -10px;">...</div>`;
   answerTooltip = L.tooltip({
     direction: "top",
     offset: [0, -30],
     permanent: true,
+    interactive: true,
   })
     .setLatLng(correctAnswer.latlng)
     .setContent(content);
+
   answerTooltip.addTo(map);
+
+  const tooltipEl = answerTooltip.getElement();
+  tooltipEl.addEventListener("click", () => {
+    showAnswerInfo(correctAnswer);
+  });
+  tooltipEl.style.pointerEvents = "auto";
 }
 
 function hideAnswerTooltip() {
@@ -304,4 +325,17 @@ function showDailyGameStats() {
       },
     },
   });
+}
+
+function showAnswerInfo(answer) {
+  showDiv(answerInfo);
+  let content = "";
+  content += `<h3 style="color: black;">${answer.textLocation}</h3>`;
+  content += `<div onclick="hideAnswerInfo()" class="dialog-close-button">x</div>`;
+  content += `<div>${answer.description}</div>`;
+  answerInfo.innerHTML = content;
+}
+
+function hideAnswerInfo() {
+  hideDiv(answerInfo);
 }

@@ -14,6 +14,7 @@ function getUserStats() {
   return {
     dailyGamesPlayed: 5,
     roundsPlayed: 10,
+    bestDailyGameScore: 8121,
     totalPoints: 2500,
   };
 }

@@ -16,6 +16,8 @@ const mockData = [
     audioLink:
       "https://accent-guesser-audio.s3.eu-west-1.amazonaws.com/08e8d62b-b3ff-4ce8-8d60-0da869430493.wav",
     textLocation: "Vienna, Austria",
+    description:
+      "The subject was born in Berlin, Germany, but was raised in Vienna. He lived in Innsbruck, Austria, and also in Québec, Canada, for three years. His lower-grade schooling was at an elite school in Vienna. Over the years, he has deliberately minimized the accent that was attached to that school. He says that his accent is essentially Viennese, but educated people in Innsbruck think he is from Salzburg, so he believes he has picked up a bit of the Tirol accent in Innsbruck.",
     latlng: [48.2082, 16.3738],
   },
   // {
