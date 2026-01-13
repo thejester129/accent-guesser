@@ -5,6 +5,7 @@ const DAILY_ROUND_TOTAL = 10;
 
 // html elements
 let title,
+  about,
   mapElem,
   dailyGameButton,
   quickGameButton,
@@ -37,6 +38,7 @@ function startup() {
 
 function assignElements() {
   title = document.getElementById("title");
+  about = document.getElementById("about");
   dailyGameButton = document.getElementById("daily-game-button");
   quickGameButton = document.getElementById("quick-game-button");
   statsButton = document.getElementById("stats-button");
@@ -106,6 +108,7 @@ function initGame() {
   hideDiv(dailyGameButton);
   hideDiv(quickGameButton);
   hideDiv(statsButton);
+  hideDiv(about);
   hideScoreboard();
   showDiv(pointLabel);
   showDiv(roundLabel);

@@ -82,3 +82,42 @@ button{
     font-size: 18px;
     line-height: 50px;
 }
+
+#about {
+    /* text-align: center; */
+    font-size: 18px;
+    margin-top: 20px;
+    margin-left:20px;
+    margin-right:20px;
+}
+
+@keyframes flagAnimation {
+  0%   { left: -600px; }
+  100%   { left: 0; }
+}
+
+.flag {
+  position: relative;
+  min-height: 30px;
+  max-height: 30px;
+  margin-right: 10px;
+  animation-name: flagAnimation;
+  animation-duration: 20s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+#flag-carousel-1 {
+  margin-left: 20px;
+  margin-right: 20px;
+  overflow: hidden;
+  max-height: 30px;
+  display: flex;
+}
+
+#flag-carousel-2 {
+  margin-left: 20px;
+  margin-right: 20px;
+  overflow: hidden;
+  max-height: 30px;
+}
