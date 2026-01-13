@@ -27,6 +27,9 @@ let title,
   dailyGameStatsChart,
   answerInfo;
 
+// user state
+let userState;
+
 // game state
 let round = 0;
 let points = 0;
@@ -34,10 +37,17 @@ let selectedLatlng, currentMarker, answerMarker, answerLine, answerTooltip;
 let gameType;
 
 function startup() {
-  assignElements();
-  createMap();
-  assignEventListeners();
-  hideDiv(mapElem); // has to be visible while creating
+  getUserState().then((state) => {
+    userState = state;
+    assignElements();
+    createMap();
+    assignEventListeners();
+    hideDiv(mapElem); // has to be visible while creating
+    if (userState.hasPlayedDailyGame) {
+      dailyGameButton.style.backgroundColor = "gray";
+      dailyGameButton.innerText = "Daily Game (Completed)";
+    }
+  });
 }
 
 function assignElements() {
@@ -72,8 +82,10 @@ function assignEventListeners() {
     navigate("index.html");
   });
   dailyGameButton.addEventListener("click", () => {
-    initGame();
-    gameType = GAME_TYPES.DAILY;
+    if (!userState.hasPlayedDailyGame) {
+      initGame();
+      gameType = GAME_TYPES.DAILY;
+    }
   });
   quickGameButton.addEventListener("click", () => {
     initGame();
@@ -214,6 +226,9 @@ function finishGame() {
   hideDiv(pointLabel);
   hideDiv(roundLabel);
   showScoreboard();
+  if (gameType === GAME_TYPES.DAILY) {
+    completeDailyGame(points);
+  }
 }
 
 function showScoreboard() {
@@ -251,79 +266,81 @@ function hideScoreboard() {
 }
 
 function showDailyGameStats() {
-  showDiv(dailyGameStatsChart);
+  getDailyGameStats().then((stats) => {
+    const { distribution, distributionIncrementSize } = stats;
+    showDiv(dailyGameStatsChart);
 
-  const { distribution, distributionIncrementSize } = getDailyGameStats();
-  const distributionPercentage = calculateDistributionPercentage(
-    distribution,
-    points,
-    distributionIncrementSize
-  );
+    const distributionPercentage = calculateDistributionPercentage(
+      distribution,
+      points,
+      distributionIncrementSize
+    );
 
-  const labels = [];
+    const labels = [];
 
-  for (let i = 0; i < distribution.length; i++) {
-    const rangeStart = i * distributionIncrementSize;
-    const rangeEnd = rangeStart + distributionIncrementSize - 1;
-    labels.push(`${rangeStart}-${rangeEnd}`);
-  }
-
-  const backgroundColors = distribution.map((x, i) => {
-    const range = labels[i].split("-");
-    if (points >= parseInt(range[0]) && points <= parseInt(range[1])) {
-      return "rgba(255, 99, 132, 0.2)";
+    for (let i = 0; i < distribution.length; i++) {
+      const rangeStart = i * distributionIncrementSize;
+      const rangeEnd = rangeStart + distributionIncrementSize - 1;
+      labels.push(`${rangeStart}-${rangeEnd}`);
     }
-    return "rgba(54, 162, 235, 0.2)";
-  });
 
-  const borderColors = distribution.map((x, i) => {
-    const range = labels[i].split("-");
-    if (points >= parseInt(range[0]) && points <= parseInt(range[1])) {
-      return "rgb(255, 99, 132)";
-    }
-    return "rgb(54, 162, 235)";
-  });
+    const backgroundColors = distribution.map((x, i) => {
+      const range = labels[i].split("-");
+      if (points >= parseInt(range[0]) && points <= parseInt(range[1])) {
+        return "rgba(255, 99, 132, 0.2)";
+      }
+      return "rgba(54, 162, 235, 0.2)";
+    });
 
-  new Chart(dailyGameStatsChart, {
-    type: "bar",
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: "Today's Score Distribution",
-          data: distribution,
-          backgroundColor: backgroundColors,
-          borderColor: borderColors,
-          borderWidth: 1,
-        },
-      ],
-    },
-    options: {
-      indexAxis: "y",
-      scales: {
-        y: {
-          beginAtZero: true,
-        },
+    const borderColors = distribution.map((x, i) => {
+      const range = labels[i].split("-");
+      if (points >= parseInt(range[0]) && points <= parseInt(range[1])) {
+        return "rgb(255, 99, 132)";
+      }
+      return "rgb(54, 162, 235)";
+    });
+
+    new Chart(dailyGameStatsChart, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "Today's Score Distribution",
+            data: distribution,
+            backgroundColor: backgroundColors,
+            borderColor: borderColors,
+            borderWidth: 1,
+          },
+        ],
       },
-      plugins: {
-        subtitle: {
-          display: true,
-          text: `You scored better than ${distributionPercentage}% of players today!`,
-          font: {
-            size: 14,
-            weight: "bolder",
+      options: {
+        indexAxis: "y",
+        scales: {
+          y: {
+            beginAtZero: true,
           },
         },
-        legend: {
-          labels: {
+        plugins: {
+          subtitle: {
+            display: true,
+            text: `You scored better than ${distributionPercentage}% of players today!`,
             font: {
               size: 14,
               weight: "bolder",
             },
           },
+          legend: {
+            labels: {
+              font: {
+                size: 14,
+                weight: "bolder",
+              },
+            },
+          },
         },
       },
-    },
+    });
   });
 }
 

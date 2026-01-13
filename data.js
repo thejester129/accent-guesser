@@ -1,8 +1,41 @@
-function getDailyGameStats() {
-  // TODO
+const API_ROOT = "https://6d4gv33s1k.execute-api.eu-west-1.amazonaws.com";
+
+async function getUserState() {
+  const res = await fetch(`${API_ROOT}/daily-scoreboard/${getUserId()}`);
+  let dailyGameState;
+  if (res.ok) {
+    dailyGameState = await res.json();
+  }
+  console.log(dailyGameState);
+
+  return {
+    hasPlayedDailyGame: !!dailyGameState,
+  };
+}
+
+async function completeDailyGame(score) {
+  await fetch(`${API_ROOT}/daily-scoreboard/${getUserId()}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ score: score }),
+  });
+}
+
+async function getDailyGameStats() {
+  const res = await fetch(`${API_ROOT}/daily-scoreboard`);
+  const allScores = await res.json();
+  const points = allScores.map((s) => s.score);
+
   let distribution = [];
   for (let i = 0; i < 20; i++) {
-    distribution.push(Math.random() * 1000);
+    const lowLimit = i * 500;
+    const highLimit = lowLimit + 499;
+    const countInRange = points.filter(
+      (p) => p >= lowLimit && p <= highLimit
+    ).length;
+    distribution.push(countInRange);
   }
   return {
     distribution: distribution,
