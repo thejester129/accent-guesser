@@ -41,13 +41,12 @@
       integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
       crossorigin=""
     ></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="text/javascript" src="models.js"></script>
     <script type="text/javascript" src="user.js"></script>
     <script type="text/javascript" src="data.js"></script>
     <script type="text/javascript" src="utils.js"></script>
     <script type="text/javascript" src="map.js"></script>
-    <script src="main.js"></script>
+    <script src="home.js"></script>
   </head>
 
   <body>
@@ -125,52 +124,6 @@
       <button id="stats-button">User Stats</button>
     </div>
 
-    <div
-      style="
-        display: flex;
-        justify-content: space-between;
-        margin-left: 20px;
-        margin-right: 20px;
-      "
-    >
-      <div id="round-label" style="display: none">Round: 1/10</div>
-      <div id="point-label" style="display: none">Points: 0</div>
-    </div>
-
-    <div id="game-bar" style="display: none">
-      <div id="audio-player-container">
-        <audio
-          id="audio-player"
-          controls
-          controlslist="nodownload noplaybackrate"
-        ></audio>
-      </div>
-    </div>
-
-    <button
-      id="confirm-answer-button"
-      class="bottom-button"
-      style="display: none"
-    >
-      Confirm
-    </button>
-
-    <button id="next-round-button" class="bottom-button" style="display: none">
-      Next Round
-    </button>
-
-    <button id="play-again-button" class="bottom-button" style="display: none">
-      Play Again
-    </button>
-
-    <button id="home-button" class="bottom-button" style="display: none">
-      Home
-    </button>
-
-    <div id="scoreboard" class="stats"></div>
-
-    <div id="map"></div>
-
     <div id="about">
       Accent Guesser is a map-based game that tests your knowledge of accents
       from around the world.
@@ -181,15 +134,10 @@
       <br />
       <br />
       <br />
-      <img src="assets/map.png" />
+      <div id="about-map">
+        <img src="assets/map.png" />
+      </div>
     </div>
-
-    <div id="answer-info"></div>
-
-    <canvas
-      id="daily-game-stats-chart"
-      style="height: 500px; margin-top: 20px; display: none"
-    ></canvas>
 
     <script>
       window.onload = () => startup();

@@ -6,13 +6,7 @@ const DAILY_ROUND_TOTAL = 10;
 // html elements
 let title,
   about,
-  flagCarousel,
   mapElem,
-  playGameButtonContainer,
-  dailyGameButton,
-  quickGameButton,
-  regionsButton,
-  statsButton,
   confirmAnswerButton,
   nextRoundButton,
   playAgainButton,
@@ -27,40 +21,22 @@ let title,
   dailyGameStatsChart,
   answerInfo;
 
-// user state
-let userState;
-
 // game state
 let round = 0;
 let points = 0;
 let selectedLatlng, currentMarker, answerMarker, answerLine, answerTooltip;
 let gameType;
 
-function startup() {
-  getUserState().then((state) => {
-    userState = state;
-    assignElements();
-    createMap();
-    assignEventListeners();
-    hideDiv(mapElem); // has to be visible while creating
-    if (userState.hasPlayedDailyGame) {
-      dailyGameButton.style.backgroundColor = "gray";
-      dailyGameButton.innerText = "Daily Game (Completed)";
-    }
-  });
+function startup(type) {
+  gameType = type;
+  assignElements();
+  createMap();
+  assignEventListeners();
+  initGame();
 }
 
 function assignElements() {
   title = document.getElementById("title");
-  about = document.getElementById("about");
-  flagCarousel = document.getElementById("flag-carousel");
-  playGameButtonContainer = document.getElementById(
-    "play-game-button-container"
-  );
-  dailyGameButton = document.getElementById("daily-game-button");
-  quickGameButton = document.getElementById("quick-game-button");
-  regionsButton = document.getElementById("regions-button");
-  statsButton = document.getElementById("stats-button");
   confirmAnswerButton = document.getElementById("confirm-answer-button");
   nextRoundButton = document.getElementById("next-round-button");
   playAgainButton = document.getElementById("play-again-button");
@@ -80,22 +56,6 @@ function assignElements() {
 function assignEventListeners() {
   title.addEventListener("click", () => {
     navigate("index.html");
-  });
-  dailyGameButton.addEventListener("click", () => {
-    if (!userState.hasPlayedDailyGame) {
-      initGame();
-      gameType = GAME_TYPES.DAILY;
-    }
-  });
-  quickGameButton.addEventListener("click", () => {
-    initGame();
-    gameType = GAME_TYPES.QUICK;
-  });
-  regionsButton.addEventListener("click", () => {
-    window.alert("Coming soon!");
-  });
-  statsButton.addEventListener("click", () => {
-    navigate("stats.html");
   });
   confirmAnswerButton.addEventListener("click", (e) => {
     showRoundAnswer();
@@ -130,9 +90,6 @@ function initGame() {
 
   resetMapView();
 
-  hideDiv(playGameButtonContainer);
-  hideDiv(about);
-  hideDiv(flagCarousel);
   hideScoreboard();
   showDiv(pointLabel);
   showDiv(roundLabel);
@@ -159,6 +116,7 @@ function nextRound() {
   roundLabel.innerText = `Round: ${round} / ${mockData.length}`;
   audioPlayer.src = getRoundAudioSource();
   hideDiv(nextRoundButton);
+  hideAnswerInfo();
 }
 
 function showRoundAnswer() {
@@ -221,6 +179,19 @@ function hideAnswerTooltip() {
   }
 }
 
+function showAnswerInfo(answer) {
+  showDiv(answerInfo);
+  let content = "";
+  content += `<h3 style="color: black;">${answer.textLocation}</h3>`;
+  content += `<div onclick="hideAnswerInfo()" class="dialog-close-button">x</div>`;
+  content += `<div style="overflow: scroll; max-height: calc(50vh - 130px); margin-bottom: 80px;">${answer.description}</div>`;
+  answerInfo.innerHTML = content;
+}
+
+function hideAnswerInfo() {
+  hideDiv(answerInfo);
+}
+
 function finishGame() {
   hideDiv(mapElem);
   hideDiv(audioPlayerContainer);
@@ -249,11 +220,11 @@ function showScoreboard() {
     mockData.map((i) => i.userAnswer.distance).reduce((a, b) => a + b, 0) /
     mockData.length;
   html += `<div><b>Average Distance:</b> ${average.toFixed(0)} km</div>`;
-  const bestGuessPoints = mockData
-    .map((i) => i.userAnswer.points)
-    .sort((a, b) => b - a)[0];
+  const bestGuessDistance = mockData
+    .map((i) => i.userAnswer.distance)
+    .sort((a, b) => a - b)[0];
   const bestGuess = mockData.find(
-    (i) => i.userAnswer.points === bestGuessPoints
+    (i) => i.userAnswer.distance === bestGuessDistance
   );
   html += `<div><b>Best Guess:</b> ${
     bestGuess.textLocation
@@ -351,17 +322,4 @@ function showDailyGameStats() {
       },
     });
   });
-}
-
-function showAnswerInfo(answer) {
-  showDiv(answerInfo);
-  let content = "";
-  content += `<h3 style="color: black;">${answer.textLocation}</h3>`;
-  content += `<div onclick="hideAnswerInfo()" class="dialog-close-button">x</div>`;
-  content += `<div style="overflow: scroll; max-height: calc(50vh - 130px); margin-bottom: 80px;">${answer.description}</div>`;
-  answerInfo.innerHTML = content;
-}
-
-function hideAnswerInfo() {
-  hideDiv(answerInfo);
 }

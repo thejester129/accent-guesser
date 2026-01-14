@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <title>Accent Guesser</title>
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="favicon/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="favicon/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="favicon/favicon-16x16.png"
+    />
+    <link rel="manifest" href="favicon/site.webmanifest" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="stylesheet.css" />
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+      crossorigin=""
+    />
+    <!-- Material Icons CSS -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+      integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+      crossorigin=""
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" src="models.js"></script>
+    <script type="text/javascript" src="user.js"></script>
+    <script type="text/javascript" src="data.js"></script>
+    <script type="text/javascript" src="utils.js"></script>
+    <script type="text/javascript" src="map.js"></script>
+    <script src="game.js"></script>
+  </head>
+
+  <body>
+    <h1 id="title" style="cursor: pointer">ACCENT GUESSER</h1>
+    <div id="header-line"></div>
+
+    <div
+      style="
+        display: flex;
+        justify-content: space-between;
+        margin-left: 20px;
+        margin-right: 20px;
+      "
+    >
+      <div id="round-label">Round: 1/10</div>
+      <div id="point-label">Points: 0</div>
+    </div>
+
+    <div id="game-bar">
+      <div id="audio-player-container">
+        <audio
+          id="audio-player"
+          controls
+          controlslist="nodownload noplaybackrate"
+        ></audio>
+      </div>
+    </div>
+
+    <button
+      id="confirm-answer-button"
+      class="bottom-button"
+      style="display: none"
+    >
+      Confirm
+    </button>
+
+    <button id="next-round-button" class="bottom-button" style="display: none">
+      Next Round
+    </button>
+
+    <button id="play-again-button" class="bottom-button" style="display: none">
+      Play Again
+    </button>
+
+    <button id="home-button" class="bottom-button" style="display: none">
+      Home
+    </button>
+
+    <div id="scoreboard" class="stats"></div>
+
+    <div id="map"></div>
+
+    <div id="answer-info"></div>
+
+    <canvas
+      id="daily-game-stats-chart"
+      style="height: 500px; margin-top: 20px; display: none"
+    ></canvas>
+
+    <script>
+      window.onload = () => startup(GAME_TYPES.QUICK);
+    </script>
+  </body>
+</html>

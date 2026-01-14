@@ -150,3 +150,8 @@ button{
       opacity: 1;
     }
   }
+
+#about-map {
+  display: flex;
+  justify-content: center;
+}
