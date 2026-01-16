@@ -174,7 +174,7 @@ function showAnswerInfo(answer) {
       <div>Birthplace: ${answer.birthplace}</div>
       <div>Native Language: ${answer.nativeLanguage}</div>
       <button id="next-round-button" class="bottom-button" onclick="nextRound()">
-        Next Round
+        ${round === questions.length ? "Finish" : "Next Round"}
       </button>
     </div>`;
   answerInfo.innerHTML = content;
