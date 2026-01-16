@@ -3,17 +3,23 @@ function getKmBetweenPoints(point1, point2) {
 }
 
 function calculatePoints(answer, correct) {
+  // bullsye
+  if (answerContainsPoint(answer)) {
+    return POINT_MAX;
+  }
+
   const distanceKm = getKmBetweenPoints(answer, correct);
-  // bullseye
+
+  // almost bullseye
   if (distanceKm < BULLSEYE_LIMIT) {
-    return POINT_TOTAL;
+    return POINT_MAX - 1;
   }
   // out of range
   if (distanceKm > RANGE_LIMIT) {
     return 0;
   }
   // middle
-  return Math.round(POINT_TOTAL - (distanceKm / RANGE_LIMIT) * POINT_TOTAL);
+  return Math.round(POINT_MAX - (distanceKm / RANGE_LIMIT) * POINT_MAX);
 }
 
 function getCenterPoint(point1, point2) {
@@ -46,8 +52,8 @@ function getZoomForPoints(point1, point2) {
   return 1;
 }
 
-function getRoundAudioSource() {
-  return mockData.find((item) => item.round === round).audioLink;
+function getRoundAudioSource(questions, round) {
+  return questions[round - 1].audioLink;
 }
 
 function showDiv(element) {
@@ -76,5 +82,25 @@ function calculateDistributionPercentage(distribution, score, incrementSize) {
       break;
     }
   }
-  return ((count / total) * 100).toFixed(2);
+  let dist = ((count / total) * 100).toFixed(2);
+  if (Number.isNaN(dist)) {
+    dist = 100; // first player
+  }
+  return dist;
+}
+
+function toUpperCase(str) {
+  const parts = str.split(" ");
+  for (let i = 0; i < parts.length; i++) {
+    parts[i] = capitalizeFirstLetter(parts[i]);
+  }
+  return parts.join(" ");
+}
+
+function capitalizeFirstLetter(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+async function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

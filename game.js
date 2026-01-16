@@ -1,6 +1,6 @@
 const BULLSEYE_LIMIT = 200;
-const RANGE_LIMIT = 3000;
-const POINT_TOTAL = 1000;
+const RANGE_LIMIT = 7500;
+const POINT_MAX = 1000;
 const DAILY_ROUND_TOTAL = 10;
 
 // html elements
@@ -8,7 +8,6 @@ let title,
   about,
   mapElem,
   confirmAnswerButton,
-  nextRoundButton,
   playAgainButton,
   homeButton,
   gameBar,
@@ -26,6 +25,7 @@ let round = 0;
 let points = 0;
 let selectedLatlng, currentMarker, answerMarker, answerLine, answerTooltip;
 let gameType;
+let questions;
 
 function startup(type) {
   gameType = type;
@@ -38,7 +38,6 @@ function startup(type) {
 function assignElements() {
   title = document.getElementById("title");
   confirmAnswerButton = document.getElementById("confirm-answer-button");
-  nextRoundButton = document.getElementById("next-round-button");
   playAgainButton = document.getElementById("play-again-button");
   homeButton = document.getElementById("home-button");
   mapElem = document.getElementById("map");
@@ -60,9 +59,6 @@ function assignEventListeners() {
   confirmAnswerButton.addEventListener("click", (e) => {
     showRoundAnswer();
   });
-  nextRoundButton.addEventListener("click", () => {
-    nextRound();
-  });
   playAgainButton.addEventListener("click", () => {
     initGame();
     hideDiv(playAgainButton);
@@ -81,55 +77,36 @@ function assignEventListeners() {
 }
 
 function initGame() {
-  round = 1;
-  points = 0;
-  roundLabel.innerText = `Round: ${round} / ${mockData.length}`;
-  pointLabel.innerText = `Points: ${points}`;
-  audioPlayer.src = getRoundAudioSource();
-  selectedLatlng = null;
+  getGameQuestions(gameType).then((qs) => {
+    console.log(qs);
+    questions = qs;
+    round = 1;
+    points = 0;
+    roundLabel.innerText = `Round: ${round} / ${questions.length}`;
+    pointLabel.innerText = `Points: ${points}`;
+    audioPlayer.src = getRoundAudioSource(questions, round);
+    selectedLatlng = null;
 
-  resetMapView();
+    resetMapView();
 
-  hideScoreboard();
-  showDiv(pointLabel);
-  showDiv(roundLabel);
-  showDiv(mapElem);
-  showFlexDiv(gameBar);
-}
-
-function nextRound() {
-  selectedLatlng = null;
-  hideAnswerLine();
-  hideAnswerTooltip();
-  currentMarker.removeFrom(map);
-  answerMarker.removeFrom(map);
-  resetMapView();
-  answerLine = null;
-  answerMarker = null;
-
-  if (round === mockData.length) {
-    finishGame();
-    return;
-  }
-
-  round += 1;
-  roundLabel.innerText = `Round: ${round} / ${mockData.length}`;
-  audioPlayer.src = getRoundAudioSource();
-  hideDiv(nextRoundButton);
-  hideAnswerInfo();
+    hideScoreboard();
+    showDiv(audioPlayerContainer);
+    showDiv(pointLabel);
+    showDiv(roundLabel);
+    showDiv(mapElem);
+  });
 }
 
 function showRoundAnswer() {
   audioPlayer.pause();
-  showAnswerMarker();
-  const answerItem = mockData.find((item) => item.round === round);
-  const correctLatlng = answerItem.latlng;
+  showAnswerCountry();
+  const answerItem = questions[round - 1];
+  const correctLatlng = getAnswerCenterCoords();
   const answerPoints = calculatePoints(selectedLatlng, correctLatlng);
   points += answerPoints;
   pointLabel.innerText = `Points: ${points}`;
   drawAnswerLine(selectedLatlng, correctLatlng);
   hideDiv(confirmAnswerButton);
-  showDiv(nextRoundButton);
 
   const distanceKm = getKmBetweenPoints(selectedLatlng, correctLatlng);
 
@@ -141,20 +118,22 @@ function showRoundAnswer() {
     points: answerPoints,
   };
 
-  if (round === mockData.length) {
-    nextRoundButton.innerText = "Finish";
+  if (round === questions.length) {
+    // TODO
+    // nextRoundButton.innerText = "Finish";
   }
 }
 
 function showAnswerTooltip(distance, points) {
-  const correctAnswer = mockData.find((item) => item.round === round);
-  let content = `${correctAnswer.textLocation}<br />`;
-  content += `${distance.toFixed(0)}km<br /> `;
-  content += `${points} points`;
-  if (distance < BULLSEYE_LIMIT) {
-    content += `<br /> 🎯 Bullseye!`;
-  }
-  content += `<br /> <div style="text-align: center; color: gray; font-size: 20px; margin-top: -10px;">...</div>`;
+  const correctAnswer = questions[round - 1];
+  let content = `
+  <div style="text-align: center;">
+    <div>${correctAnswer.textLocation}</div>
+    <div>${distance.toFixed(0)}km</div>
+    <div>${points} points</div>
+    ${points === POINT_MAX ? "<div>🎯 Bullseye!</div>" : ""}
+  </div>
+  `;
   answerTooltip = L.tooltip({
     direction: "top",
     offset: [0, -30],
@@ -166,6 +145,9 @@ function showAnswerTooltip(distance, points) {
 
   answerTooltip.addTo(map);
 
+  showAnswerInfo(correctAnswer);
+
+  // TODO
   const tooltipEl = answerTooltip.getElement();
   tooltipEl.addEventListener("click", () => {
     showAnswerInfo(correctAnswer);
@@ -182,9 +164,19 @@ function hideAnswerTooltip() {
 function showAnswerInfo(answer) {
   showDiv(answerInfo);
   let content = "";
-  content += `<h3 style="color: black;">${answer.textLocation}</h3>`;
-  content += `<div onclick="hideAnswerInfo()" class="dialog-close-button">x</div>`;
-  content += `<div style="overflow: scroll; max-height: calc(50vh - 130px); margin-bottom: 80px;">${answer.description}</div>`;
+  // content += `<h3 style="color: black;">${answer.textLocation}</h3>`;
+  // content += `<div onclick="hideAnswerInfo()" class="dialog-close-button">x</div>`;
+  // TODO country info
+  content += `
+    <div id="answer-info-content"> 
+      <div>Age: ${answer.age}</div>
+      <div>Gender: ${answer.gender}</div>
+      <div>Birthplace: ${answer.birthplace}</div>
+      <div>Native Language: ${answer.nativeLanguage}</div>
+      <button id="next-round-button" class="bottom-button" onclick="nextRound()">
+        Next Round
+      </button>
+    </div>`;
   answerInfo.innerHTML = content;
 }
 
@@ -192,12 +184,36 @@ function hideAnswerInfo() {
   hideDiv(answerInfo);
 }
 
+function nextRound() {
+  audioPlayer.pause();
+  selectedLatlng = null;
+  hideAnswerLine();
+  hideAnswerTooltip();
+  hideAnswerCountry();
+  currentMarker.removeFrom(map);
+  answerMarker.removeFrom(map);
+  resetMapView();
+  answerLine = null;
+  answerMarker = null;
+
+  if (round === questions.length) {
+    finishGame();
+    return;
+  }
+
+  round += 1;
+  roundLabel.innerText = `Round: ${round} / ${questions.length}`;
+  audioPlayer.src = getRoundAudioSource(questions, round);
+  hideAnswerInfo();
+}
+
 function finishGame() {
+  audioPlayer.pause();
   hideDiv(mapElem);
   hideDiv(audioPlayerContainer);
-  hideDiv(nextRoundButton);
   hideDiv(pointLabel);
   hideDiv(roundLabel);
+  hideAnswerInfo();
   showScoreboard();
   if (gameType === GAME_TYPES.DAILY) {
     completeDailyGame(points);
@@ -205,7 +221,7 @@ function finishGame() {
 
   updateUserStats({
     dailyGamesPlayed: gameType === GAME_TYPES.DAILY ? 1 : 0,
-    roundsPlayed: mockData.length, // TODO
+    roundsPlayed: questions.length,
     dailyGameScore: gameType === GAME_TYPES.DAILY ? points : 0,
     points: points,
   });
@@ -217,13 +233,13 @@ function showScoreboard() {
   let html = `<div>`;
   html += `<div><b>Total:</b> ${points} points</div>`;
   const average =
-    mockData.map((i) => i.userAnswer.distance).reduce((a, b) => a + b, 0) /
-    mockData.length;
+    questions.map((i) => i.userAnswer.distance).reduce((a, b) => a + b, 0) /
+    questions.length;
   html += `<div><b>Average Distance:</b> ${average.toFixed(0)} km</div>`;
-  const bestGuessDistance = mockData
+  const bestGuessDistance = questions
     .map((i) => i.userAnswer.distance)
     .sort((a, b) => a - b)[0];
-  const bestGuess = mockData.find(
+  const bestGuess = questions.find(
     (i) => i.userAnswer.distance === bestGuessDistance
   );
   html += `<div><b>Best Guess:</b> ${

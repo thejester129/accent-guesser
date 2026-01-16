@@ -40,77 +40,69 @@ async function getDailyGameStats() {
   };
 }
 
-const mockData = [
-  {
-    round: 1,
-    audioLink:
-      "https://accent-guesser-audio.s3.eu-west-1.amazonaws.com/08e8d62b-b3ff-4ce8-8d60-0da869430493.wav",
-    textLocation: "Vienna, Austria",
-    description:
-      "The subject was born in Berlin, Germany, but was raised in Vienna. He lived in Innsbruck, Austria, and also in Québec, Canada, for three years. His lower-grade schooling was at an elite school in Vienna. Over the years, he has deliberately minimized the accent that was attached to that school. He says that his accent is essentially Viennese, but educated people in Innsbruck think he is from Salzburg, so he believes he has picked up a bit of the Tirol accent in Innsbruck.",
-    latlng: [48.2082, 16.3738],
-  },
-  {
-    round: 2,
-    audioLink:
-      "https://accent-guesser-audio.s3.eu-west-1.amazonaws.com/d1d37080-a4ed-40eb-897e-995c45cb1bed.wav",
-    textLocation: "Hong Kong, China",
-    latlng: [22.3193, 114.1694],
-  },
-  {
-    round: 3,
-    audioLink:
-      "https://accent-guesser-audio.s3.eu-west-1.amazonaws.com/8fc5a6bd-e446-4bcb-b72e-5f18641cdc01.wav",
-    textLocation: "Cairo, Egypt",
-    latlng: [30.0444, 31.2357],
-  },
-  {
-    round: 4,
-    audioLink:
-      "https://accent-guesser-audio.s3.eu-west-1.amazonaws.com/6ac7ec87-c181-4719-84c7-6b1dd9491ef3.wav",
-    textLocation: "Buenos Aires, Argentina",
-    latlng: [-34.6037, -58.3816],
-  },
-  {
-    round: 5,
-    audioLink:
-      "https://accent-guesser-audio.s3.eu-west-1.amazonaws.com/1d463a5c-c13b-4f67-a519-6017f5a2398a.wav",
-    textLocation: "Gladstone, Australia",
-    latlng: [-23.8422, 151.2565],
-  },
-  {
-    round: 6,
-    audioLink:
-      "https://accent-guesser-audio.s3.eu-west-1.amazonaws.com/770bec6a-2bf4-41a4-8c61-31371ab3fead.wav",
-    textLocation: "Los Angeles, USA",
-    latlng: [34.0522, -118.2437],
-  },
-  {
-    round: 7,
-    audioLink:
-      "https://accent-guesser-audio.s3.eu-west-1.amazonaws.com/9a9ea2c8-af02-4c44-98f4-006a9fd62ce8.wav",
-    textLocation: "Sylhet, Bangladesh",
-    latlng: [24.8949, 91.8687],
-  },
-  {
-    round: 8,
-    audioLink:
-      "https://accent-guesser-audio.s3.eu-west-1.amazonaws.com/f02e8746-a709-4029-88c3-73c3b8ca8a85.wav",
-    textLocation: "Glasgow, Scotland",
-    latlng: [55.8642, -4.2518],
-  },
-  {
-    round: 9,
-    audioLink:
-      "https://accent-guesser-audio.s3.eu-west-1.amazonaws.com/7662b898-711e-4b0f-9819-b13c132912a2.wav",
-    textLocation: "Moscow, Russia",
-    latlng: [55.7558, 37.6173],
-  },
-  {
-    round: 10,
-    audioLink:
-      "https://accent-guesser-audio.s3.eu-west-1.amazonaws.com/7b3aa8e8-8d9d-4dc8-8e32-d2fb46dd0d75.wav",
-    textLocation: "Istanbul, Turkey",
-    latlng: [41.0082, 28.9784],
-  },
-];
+async function getGameQuestions(gameType) {
+  if (gameType === GAME_TYPES.DAILY) {
+    return getDailyGameQuestions();
+  }
+  if (gameType === GAME_TYPES.QUICK) {
+    return getQuickGameQuestions();
+  }
+}
+
+async function getDailyGameQuestions() {
+  const speakerRes = await fetch(`${API_ROOT}/daily-game`);
+  const speakerIds = (await speakerRes.json()).speakerIds;
+
+  const res = await fetch(`${S3_ROOT}/speakers.json`);
+  const data = await res.json();
+  const picks = speakerIds.map((id) => data.find((d) => d.speakerid === id));
+
+  await waitForGeoJson();
+
+  const questions = picks.map(dataToQuestion);
+
+  return questions;
+}
+
+async function getQuickGameQuestions() {
+  const res = await fetch(`${S3_ROOT}/speakers.json`);
+  const data = await res.json();
+  const picks = [];
+  for (let i = 0; i < 10; i++) {
+    const randomIndex = Math.floor(Math.random() * data.length);
+    picks.push(data[randomIndex]);
+    data.splice(randomIndex, 1);
+  }
+
+  await waitForGeoJson();
+
+  const questions = picks.map(dataToQuestion);
+
+  return questions;
+}
+
+async function waitForGeoJson() {
+  // need geojson loaded before finding country coords
+  let tries = 0;
+  while (!geojson) {
+    if (tries > 100) {
+      window.location.reload();
+    }
+    await sleep(50);
+    tries++;
+  }
+}
+
+function dataToQuestion(data) {
+  return {
+    audioLink: `https://accent-guesser-audio.s3.eu-west-1.amazonaws.com/${data.filename}.mp3`,
+    textLocation: toUpperCase(data.country),
+    age: data.age,
+    birthplace: toUpperCase(data.birthplace),
+    nativeLanguage: toUpperCase(data.native_language),
+    gender: toUpperCase(data.sex),
+    feature: data,
+    country: data.country,
+    latlng: findCountryCenterCoords(data.country),
+  };
+}

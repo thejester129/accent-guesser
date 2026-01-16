@@ -106,22 +106,21 @@
     </div>
     <div id="header-line"></div>
 
-    <div
-      id="play-game-button-container"
-      style="
-        margin-top: 20px;
-        margin-left: 20px;
-        margin-right: 20px;
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        flex-direction: column;
-      "
-    >
-      <button id="daily-game-button">Daily Game</button>
-      <button id="quick-game-button">Quick Game</button>
-      <button id="regions-button">Regions</button>
-      <button id="stats-button">User Stats</button>
+    <div id="play-game-button-container">
+      <button id="daily-game-button" class="play-game-button">
+        Daily Game
+      </button>
+      <button id="quick-game-button" class="play-game-button">
+        Quick Game
+      </button>
+      <button
+        id="regions-button"
+        class="play-game-button"
+        style="background-color: gray"
+      >
+        Regions (Coming Soon!)
+      </button>
+      <button id="stats-button" class="play-game-button">User Stats</button>
     </div>
 
     <div id="about">
@@ -135,7 +134,18 @@
       <br />
       <br />
       <div id="about-map">
-        <img src="assets/map.png" />
+        <img id="about-map-image" src="assets/aboutmap.png" />
+      </div>
+      <br />
+      <br />
+      <br />
+      <div style="font-size: small">
+        This game uses data from
+        <a
+          href="https://www.kaggle.com/datasets/rtatman/speech-accent-archive/data"
+          >Weinberger, S. (2013). Speech accent archive. George Mason
+          University.
+        </a>
       </div>
     </div>
 

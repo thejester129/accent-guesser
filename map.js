@@ -1,4 +1,6 @@
-let map;
+let map, geojson;
+let countryData;
+let selectedCountry;
 
 const greenIcon = new L.Icon({
   iconUrl:
@@ -25,6 +27,63 @@ function createMap() {
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }
   ).addTo(map);
+
+  fetch(`${S3_ROOT}/countries.geo.json`)
+    .then((response) => response.json())
+    .then((data) => {
+      countryData = data;
+      geojson = L.geoJson(data, {
+        style: styleCountry,
+        onEachFeature: onEachFeature,
+      }).addTo(map);
+    })
+    .catch((error) => {
+      console.error("Error loading GeoJSON on the Main Map:", error);
+    });
+}
+
+function styleCountry(feature) {
+  return {
+    fillColor: "gray",
+    weight: 0.1,
+    opacity: 0.2,
+    color: "black",
+    fillOpacity: 0.1,
+  };
+}
+
+function onEachFeature(feature, layer) {
+  layer.on({
+    // mouseover: (e) => highlightCountry(e, "red"),
+    // mouseout: resetHoverHighlight,
+    // click: selectCountry,
+  });
+}
+
+function highlightCountry(target, color) {
+  target.setStyle({
+    weight: 5,
+    color: color,
+    fillColor: color,
+    dashArray: "",
+    fillOpacity: 0.5,
+  });
+}
+
+function removeHighlight(target) {
+  geojson.resetStyle(target);
+}
+
+function selectCountry(e) {
+  if (selectedCountry) {
+    removeHighlight(selectedCountry);
+  }
+  highlightCountry(e.target, "blue");
+  selectedCountry = e.target;
+}
+
+function zoomToCountry(layer) {
+  map.fitBounds(layer.getBounds(), { padding: [50, 50] });
 }
 
 function resetMapView() {
@@ -52,14 +111,63 @@ function addMarker(latLng) {
 }
 
 function showAnswerMarker() {
-  const correctAnswer = mockData.find((item) => item.round === round);
-  answerMarker = L.marker(correctAnswer.latlng, {
+  const correctAnswer = questions[round - 1];
+  const correctLatLng = getAnswerCenterCoords();
+
+  answerMarker = L.marker(correctLatLng, {
     title: correctAnswer.textLocation,
     icon: greenIcon,
     title: "test",
   });
   answerMarker.addTo(map);
-  const coords = getCenterPoint(selectedLatlng, correctAnswer.latlng);
-  const zoom = getZoomForPoints(selectedLatlng, correctAnswer.latlng);
+  const coords = getCenterPoint(selectedLatlng, correctLatLng);
+  const zoom = getZoomForPoints(selectedLatlng, correctLatLng);
   map.setView(coords, zoom);
+}
+
+function showAnswerCountry() {
+  const layer = getAnswerLayer();
+  highlightCountry(layer, "green");
+  showAnswerMarker();
+}
+
+function hideAnswerCountry() {
+  const layer = getAnswerLayer();
+  removeHighlight(layer);
+}
+
+function getAnswerLayer() {
+  const correctAnswer = questions[round - 1];
+  const layer = findCountryLayer(correctAnswer.country);
+  return layer;
+}
+
+function getAnswerCenterCoords() {
+  const coords = getAnswerLayer().getCenter();
+  return [coords.lat, coords.lng];
+}
+
+function findCountryLayer(name) {
+  const layer = Object.values(geojson._layers).find(
+    (layer) =>
+      layer.feature.properties.name.toLowerCase() === name.toLowerCase()
+  );
+  return layer;
+}
+
+function findCountryCenterCoords(name) {
+  const coords = findCountryLayer(name).getCenter();
+  return [coords.lat, coords.lng];
+}
+
+function answerContainsPoint(point) {
+  point = L.latLng(point[1], point[0]); // TODO yes, this is weird but works - polygons the wrong way around?
+  const polygons = getAnswerPolygons();
+  const polys = polygons.map((poly) => L.polygon(poly));
+  return polys.some((p) => p.contains(point));
+}
+
+function getAnswerPolygons() {
+  const layer = getAnswerLayer();
+  return layer.feature.geometry.coordinates;
 }

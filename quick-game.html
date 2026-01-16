@@ -41,6 +41,7 @@
       integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
       crossorigin=""
     ></script>
+    <script src="https://cdn.rawgit.com/hayeswise/Leaflet.PointInPolygon/v1.0.0/wise-leaflet-pip.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="text/javascript" src="models.js"></script>
     <script type="text/javascript" src="user.js"></script>
@@ -66,14 +67,12 @@
       <div id="point-label">Points: 0</div>
     </div>
 
-    <div id="game-bar">
-      <div id="audio-player-container">
-        <audio
-          id="audio-player"
-          controls
-          controlslist="nodownload noplaybackrate"
-        ></audio>
-      </div>
+    <div id="audio-player-container">
+      <audio
+        id="audio-player"
+        controls
+        controlslist="nodownload noplaybackrate"
+      ></audio>
     </div>
 
     <button
@@ -84,9 +83,9 @@
       Confirm
     </button>
 
-    <button id="next-round-button" class="bottom-button" style="display: none">
+    <!-- <button id="next-round-button" class="bottom-button" style="display: none">
       Next Round
-    </button>
+    </button> -->
 
     <button id="play-again-button" class="bottom-button" style="display: none">
       Play Again
