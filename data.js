@@ -66,12 +66,16 @@ async function getDailyGameQuestions() {
 
 async function getQuickGameQuestions() {
   const res = await fetch(`${S3_ROOT}/speakers.json`);
-  const data = await res.json();
+  const speakers = await res.json();
+  const countries = [];
   const picks = [];
   for (let i = 0; i < 10; i++) {
-    const randomIndex = Math.floor(Math.random() * data.length);
-    picks.push(data[randomIndex]);
-    data.splice(randomIndex, 1);
+    let randomIndex = Math.floor(Math.random() * speakers.length);
+    while (countries.includes(speakers[randomIndex].country)) {
+      randomIndex = Math.floor(Math.random() * speakers.length);
+    }
+    picks.push(speakers[randomIndex]);
+    countries.push(speakers[randomIndex].country);
   }
 
   await waitForGeoJson();
