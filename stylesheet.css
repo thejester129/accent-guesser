@@ -134,12 +134,14 @@ button{
   z-index: 1500;
   text-align: center;
   font-size: 15px;
-  color: gray;
+  color: black;
   display: none;
   padding: 20px;
   background-color: white;
   animation-duration: 0.7s;
   animation-name: slideUp;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
 }
 
 #answer-info-content{
