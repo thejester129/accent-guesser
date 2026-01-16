@@ -245,6 +245,10 @@ function showScoreboard() {
   html += `<div><b>Best Guess:</b> ${
     bestGuess.textLocation
   } (${bestGuess.userAnswer.distance.toFixed(0)}km)</div>`;
+  const bullseyes = questions.filter(
+    (i) => i.userAnswer.points === POINT_MAX
+  ).length;
+  html += `<div><b>Bullseyes:</b> ${bullseyes}</div>`;
   scoreboard.innerHTML = html;
 
   if (gameType === GAME_TYPES.DAILY) {
