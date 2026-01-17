@@ -110,3 +110,11 @@ function dataToQuestion(data) {
     latlng: findCountryCenterCoords(data.country),
   };
 }
+
+async function addVisitor() {
+  if (window.location.host !== "localhost:3000") {
+    await fetch(`${API_ROOT}/visitors`, {
+      method: "POST",
+    });
+  }
+}

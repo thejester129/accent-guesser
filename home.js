@@ -20,6 +20,7 @@ function startup() {
       dailyGameButton.innerText = "Daily Game (Completed)";
     }
   });
+  addVisitor();
 }
 
 function assignElements() {
