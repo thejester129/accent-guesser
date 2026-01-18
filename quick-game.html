@@ -52,27 +52,20 @@
   </head>
 
   <body>
-    <h1 id="title" style="cursor: pointer">ACCENT GUESSER</h1>
-    <div id="header-line"></div>
-
-    <div
-      style="
-        display: flex;
-        justify-content: space-between;
-        margin-left: 20px;
-        margin-right: 20px;
-      "
-    >
-      <div id="round-label">Round: 1/10</div>
-      <div id="point-label">Points: 0</div>
-    </div>
-
-    <div id="audio-player-container">
-      <audio
-        id="audio-player"
-        controls
-        controlslist="nodownload noplaybackrate"
-      ></audio>
+    <div id="header-overlay">
+      <h1 id="title" style="cursor: pointer">ACCENT GUESSER</h1>
+      <div id="subhead-game-text">
+        <div id="round-label">Round: 1/10</div>
+        <div id="point-label">Points: 0</div>
+      </div>
+      <div id="audio-player-container">
+        <audio
+          id="audio-player"
+          controls
+          controlslist="nodownload noplaybackrate"
+          style="border-radius: 20px"
+        ></audio>
+      </div>
     </div>
 
     <button
@@ -83,9 +76,9 @@
       Confirm
     </button>
 
-    <!-- <button id="next-round-button" class="bottom-button" style="display: none">
+    <button id="next-round-button" class="bottom-button" style="display: none">
       Next Round
-    </button> -->
+    </button>
 
     <button id="play-again-button" class="bottom-button" style="display: none">
       Play Again
@@ -103,7 +96,12 @@
 
     <canvas
       id="daily-game-stats-chart"
-      style="height: 500px; margin-top: 20px; display: none"
+      style="
+        height: 500px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        display: none;
+      "
     ></canvas>
 
     <script>

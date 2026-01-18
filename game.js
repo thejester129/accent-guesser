@@ -8,6 +8,7 @@ let title,
   about,
   mapElem,
   confirmAnswerButton,
+  nextRoundButton,
   playAgainButton,
   homeButton,
   gameBar,
@@ -38,6 +39,7 @@ function startup(type) {
 function assignElements() {
   title = document.getElementById("title");
   confirmAnswerButton = document.getElementById("confirm-answer-button");
+  nextRoundButton = document.getElementById("next-round-button");
   playAgainButton = document.getElementById("play-again-button");
   homeButton = document.getElementById("home-button");
   mapElem = document.getElementById("map");
@@ -58,6 +60,9 @@ function assignEventListeners() {
   });
   confirmAnswerButton.addEventListener("click", (e) => {
     showRoundAnswer();
+  });
+  nextRoundButton.addEventListener("click", (e) => {
+    nextRound();
   });
   playAgainButton.addEventListener("click", () => {
     initGame();
@@ -106,7 +111,9 @@ function showRoundAnswer() {
   points += answerPoints;
   pointLabel.innerText = `Points: ${points}`;
   drawAnswerLine(selectedLatlng, correctLatlng);
+
   hideDiv(confirmAnswerButton);
+  showDiv(nextRoundButton);
 
   const distanceKm = getKmBetweenPoints(selectedLatlng, correctLatlng);
 
@@ -119,15 +126,14 @@ function showRoundAnswer() {
   };
 
   if (round === questions.length) {
-    // TODO
-    // nextRoundButton.innerText = "Finish";
+    nextRoundButton.innerText = "Finish";
   }
 }
 
 function showAnswerTooltip(distance, points) {
   const correctAnswer = questions[round - 1];
   let content = `
-  <div style="text-align: center;">
+  <div style="text-align: center; font-size: 13px;">
     <div>${correctAnswer.textLocation}</div>
     <div>${distance.toFixed(0)}km</div>
     <div>${points} points</div>
@@ -173,9 +179,6 @@ function showAnswerInfo(answer) {
       <div>Gender: ${answer.gender}</div>
       <div>Birthplace: ${answer.birthplace}</div>
       <div>Native Language: ${answer.nativeLanguage}</div>
-      <button id="next-round-button" class="bottom-button" onclick="nextRound()">
-        ${round === questions.length ? "Finish" : "Next Round"}
-      </button>
     </div>`;
   answerInfo.innerHTML = content;
 }
@@ -205,6 +208,7 @@ function nextRound() {
   roundLabel.innerText = `Round: ${round} / ${questions.length}`;
   audioPlayer.src = getRoundAudioSource(questions, round);
   hideAnswerInfo();
+  hideDiv(nextRoundButton);
 }
 
 function finishGame() {
@@ -230,7 +234,7 @@ function finishGame() {
 function showScoreboard() {
   showDiv(scoreboard);
 
-  let html = `<div>`;
+  let html = `<div`;
   html += `<div><b>Total:</b> ${points} points</div>`;
   const average =
     questions.map((i) => i.userAnswer.distance).reduce((a, b) => a + b, 0) /

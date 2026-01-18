@@ -16,17 +16,30 @@ const greenIcon = new L.Icon({
 function createMap() {
   const options = {
     minZoom: 2, // 3 on pc
+    zoomControl: false,
   };
   map = L.map("map", options);
   resetMapView();
 
-  L.tileLayer(
-    "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
+  var CartoDB_Voyager = L.tileLayer(
+    "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
     {
       attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: "abcd",
+      maxZoom: 20,
     }
-  ).addTo(map);
+  );
+
+  CartoDB_Voyager.addTo(map);
+
+  // L.tileLayer(
+  //   "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
+  //   {
+  //     attribution:
+  //       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  //   }
+  // ).addTo(map);
 
   fetch(`${S3_ROOT}/countries.geo.json`)
     .then((response) => response.json())

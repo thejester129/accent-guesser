@@ -45,9 +45,9 @@ function assignEventListeners() {
   quickGameButton.addEventListener("click", () => {
     navigate("quick-game.html");
   });
-  regionsButton.addEventListener("click", () => {
-    window.alert("Coming soon!");
-  });
+  // regionsButton.addEventListener("click", () => {
+  //   window.alert("Coming soon!");
+  // });
   statsButton.addEventListener("click", () => {
     navigate("stats.html");
   });

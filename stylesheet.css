@@ -3,15 +3,15 @@
 }
 
 body {
-  /* background-color: #e6e6e6; */
-  background-image: linear-gradient(to bottom, #dddddd, #ffffff, #e6e6e6);
+  /* background-image: linear-gradient(to bottom, #eeeeee, #ffffff, #e6e6e6); */
   display: flex;
   flex-direction: column;
 }
 
 h1 {
-  color: #0d0d0d;
+  color: #fafafa;
   text-align: center;
+  font-size: 28px;
 }
 
 h2 {
@@ -20,17 +20,43 @@ h2 {
   font-size: medium;
 }
 
-#map {
-  height: 70vh;
-  margin: 20px;
-  margin-top: 10px;
+h3 {
+  color: #0d0d0d;
+  text-align: center;
+  font-size: 28px;
 }
 
-#header_line {
-  height: 2px;
-  color: #0d0d0d;
-  background-color: #0d0d0d;
+#header-overlay{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2000;
+  min-height: 70px;
+  background-color: #4CAF50dd;
+  padding: 10px 0;
+  border-bottom-right-radius: 30px;
+  border-bottom-left-radius: 30px;
+  box-shadow: 10px 8px 8px lightgray;
 }
+
+#subhead-game-text{
+  display: flex;
+  justify-content: space-between;
+  margin-left: 20px;
+  margin-right: 20px;
+  color: #fafafa;
+  font-size: 20px;
+}
+
+#map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
 
 #play-game-button-container{
   margin-top: 50px;
@@ -64,17 +90,11 @@ button{
 #audio-player-container{
     text-align: center;
     margin: 15px;
+    margin-bottom: 5px;
 }
 
-
-#point-label{
-    font-size: 22px;
-    z-index: 2000;
-}
-
-#round-label{
-    font-size: 22px;
-    z-index: 2000;
+audio{
+    width: min(100%, 500px);
 }
 
 .bottom-button{
@@ -89,6 +109,7 @@ button{
     text-align: center;
     font-size: 18px;
     line-height: 50px;
+    margin-top: 200px;
 }
 
 #about {
@@ -118,6 +139,7 @@ button{
 #flag-carousel {
   margin-left: 20px;
   margin-right: 20px;
+  margin-top: 15px;
   overflow: hidden;
   max-height: 30px;
   display: flex;
@@ -142,8 +164,8 @@ button{
   background-color: white;
   animation-duration: 0.7s;
   animation-name: slideUp;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
 }
 
 #answer-info-content{
@@ -192,4 +214,13 @@ a{
   background-color: lightgray;
   text-align: center;
   padding: 20px;
+}
+
+
+
+/* desktop */
+@media screen and (min-width: 800px) {
+  #subhead-game-text{
+    margin-top: -40px;
+  } 
 }
